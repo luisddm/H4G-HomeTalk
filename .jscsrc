@@ -1,0 +1,6 @@
+{
+  "preset": "airbnb",
+  "maximumLineLength": 140,
+  "requireCamelCaseOrUpperCaseIdentifiers": false,
+  "validateLineBreaks": false
+}

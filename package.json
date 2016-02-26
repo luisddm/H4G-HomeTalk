@@ -1,0 +1,16 @@
+{
+  "name": "hometalk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.20.1",
+    "unirest": "^0.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Luis y Oliver",
+  "license": "MIT"
+}
