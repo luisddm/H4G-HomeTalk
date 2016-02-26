@@ -4,12 +4,19 @@
   "description": "",
   "main": "bot.js",
   "dependencies": {
+    "bootstrap": "^3.3.6",
+    "highcharts": "^4.2.3",
+    "jquery": "^2.2.1",
+    "moment": "^2.11.2",
     "node-telegram-bot-api": "^0.20.1",
     "unirest": "^0.4.2"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "api": "json-server --watch db.json",
+    "bot": "node bot.js",
+    "web": "http-server",
+    "start": "npm run web && npm run bot && npm run api"
   },
   "author": "Luis y Oliver",
   "license": "MIT"

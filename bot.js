@@ -49,8 +49,8 @@ function sendCommand(command) {
       const opts = {
         reply_markup: {
           keyboard: [
-            ['Encender'], ['Apagar'],
-            ['Potencia'], ['Estado'],
+            ['Encender', 'Apagar'],
+            ['Potencia', 'Estado'],
           ],
         },
       };
@@ -105,16 +105,17 @@ function sendCommand(command) {
   });
 }
 
-net.createServer(function (socket) {
+net.createServer(socket => {
   console.log('\nNew data!');
 
-  socket.on('data', function (data) {
+  socket.on('data', data => {
     console.log(JSON.parse(data).Plug3.Data.toString());
     const pot = JSON.parse(data).Plug3.Data.toString();
+    const status = JSON.parse(data).Plug0.Data.toString();
 
     unirest.post('http://localhost:3000/posts')
       .header('Accept', 'application/json')
-      .send({ date: Date(), power: pot })
+      .send({ date: Date(), power: pot, status: status > 0 ? true : false })
       .end(() => {
         console.log('Added new data!');
       });

@@ -1,54 +1,70 @@
 {
   "posts": [
     {
-      "date": "Fri Feb 26 2016 19:14:29 GMT+0100 (CET)",
-      "power": 56.25,
-      "id": 74
+      "date": "Fri Feb 26 2016 21:25:32 GMT+0100 (CET)",
+      "power": 85.66,
+      "status": false,
+      "id": 1472
     },
     {
-      "date": "Fri Feb 26 2016 19:14:32 GMT+0100 (CET)",
-      "power": 56.25,
-      "id": 75
+      "date": "Fri Feb 26 2016 21:25:35 GMT+0100 (CET)",
+      "power": 90.62,
+      "status": false,
+      "id": 1473
     },
     {
-      "date": "Fri Feb 26 2016 19:14:35 GMT+0100 (CET)",
-      "power": 54.72,
-      "id": 76
+      "date": "Fri Feb 26 2016 21:25:38 GMT+0100 (CET)",
+      "power": 90.62,
+      "status": false,
+      "id": 1474
     },
     {
-      "date": "Fri Feb 26 2016 19:14:38 GMT+0100 (CET)",
-      "power": 54.72,
-      "id": 77
+      "date": "Fri Feb 26 2016 21:25:41 GMT+0100 (CET)",
+      "power": 94.73,
+      "status": false,
+      "id": 1475
     },
     {
-      "date": "Fri Feb 26 2016 19:14:42 GMT+0100 (CET)",
-      "power": 65.33,
-      "id": 78
+      "date": "Fri Feb 26 2016 21:25:44 GMT+0100 (CET)",
+      "power": 94.73,
+      "status": false,
+      "id": 1476
     },
     {
-      "date": "Fri Feb 26 2016 19:14:44 GMT+0100 (CET)",
-      "power": 65.33,
-      "id": 79
+      "date": "Fri Feb 26 2016 21:25:47 GMT+0100 (CET)",
+      "power": 92.43,
+      "status": false,
+      "id": 1477
     },
     {
-      "date": "Fri Feb 26 2016 19:14:47 GMT+0100 (CET)",
-      "power": 60.39,
-      "id": 80
+      "date": "Fri Feb 26 2016 21:25:50 GMT+0100 (CET)",
+      "power": 92.43,
+      "status": false,
+      "id": 1478
     },
     {
-      "date": "Fri Feb 26 2016 19:14:50 GMT+0100 (CET)",
-      "power": 60.39,
-      "id": 81
+      "date": "Fri Feb 26 2016 21:25:53 GMT+0100 (CET)",
+      "power": 92.43,
+      "status": false,
+      "id": 1479
     },
     {
-      "date": "Fri Feb 26 2016 19:14:53 GMT+0100 (CET)",
-      "power": 53.92,
-      "id": 82
+      "date": "Fri Feb 26 2016 21:25:56 GMT+0100 (CET)",
+      "power": 92.43,
+      "status": false,
+      "id": 1480
     },
     {
-      "date": "Fri Feb 26 2016 19:14:56 GMT+0100 (CET)",
-      "power": 53.92,
-      "id": 83
+      "date": "Fri Feb 26 2016 21:25:59 GMT+0100 (CET)",
+      "power": 84.83,
+      "status": false,
+      "id": 1481
+    },
+    {
+      "date": "Fri Feb 26 2016 21:26:02 GMT+0100 (CET)",
+      "power": 84.83,
+      "status": false,
+      "id": 1482
     }
   ],
   "comments": [],
