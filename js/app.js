@@ -39,10 +39,10 @@
 
       $('#highcharts').highcharts(opts);
 
-      $('#current-value').text(res[9].power + 'W');
-      $('#current-status').text(res[9].status ? 'ON' : 'OFF');
+      $('#current-value').text(res[res.length - 1].power + 'W');
+      $('#current-status').text(res[res.length - 1].status ? 'ON' : 'OFF');
 
-      if (res[9].power > 1500) {
+      if (res[res.length - 1].power > 1500) {
         $('#bgcolor1').css('background-color', 'red');
         $('#bgcolor2').css('background-color', 'black');
 
