@@ -16,7 +16,7 @@
     },
     yAxis: {
       title: {
-        text: 'Potencia (w)',
+        text: 'Potencia (W)',
       },
     },
     series: [
@@ -39,7 +39,7 @@
 
       $('#highcharts').highcharts(opts);
 
-      $('#current-value').text(res[9].power + 'w');
+      $('#current-value').text(res[9].power + 'W');
       $('#current-status').text(res[9].status ? 'ON' : 'OFF');
 
       if (res[9].power > 1500) {

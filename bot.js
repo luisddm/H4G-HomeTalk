@@ -10,8 +10,16 @@ const getData = 'at!wt\n';
 const setPowerRelayOn = 'at!ac022on\n';
 const setPowerRelayOff = 'at!ac022of\n';
 
-const IP_01 = '10.0.11.220';
-const IP_02 = '10.0.11.216';
+//const IP_estufa = '10.0.11.220';
+//const IP_lampara = '10.0.11.216';
+
+const IP_estufa = '192.168.43.73';
+const IP_lampara = '192.168.43.190';
+
+const selectedDevice = {
+  ip: IP_estufa,
+  name: 'estufa',
+};
 
 const clientPort = 9765;
 const serverPort = 9757;
@@ -20,6 +28,8 @@ const serverPort = 9757;
 const bot = new TelegramBot(token, { polling: true });
 
 var id;
+var messageOpts;
+var alreadySended = false;
 
 // When the bot receives any kind of message
 bot.on('message', msg => {
@@ -34,7 +44,7 @@ bot.on('message', msg => {
 function sendCommand(command) {
   const socket = new net.Socket();
 
-  socket.connect(clientPort, IP_01, () => {
+  socket.connect(clientPort, selectedDevice.ip, () => {
     console.log('Connected');
 
     if (command === 'Encender') {
@@ -46,8 +56,22 @@ function sendCommand(command) {
     } else if (command === 'Potencia' || command === 'Estado') {
       socket.write(getData);
 
-    } else {
-      const messageOpts = {
+    } else if (command === 'Hola') {
+      const deviceOpts = {
+        reply_markup: {
+          keyboard: [
+            ['Estufa', 'Lámpara'],
+          ],
+        },
+      };
+
+      bot.sendMessage(id, '¡Hola! Elige uno de tus dispositivos', deviceOpts);
+
+    }  else if (command === 'Estufa') {
+      selectedDevice.name = 'estufa';
+      selectedDevice.ip = IP_estufa;
+
+      messageOpts = {
         reply_markup: {
           keyboard: [
             ['Encender', 'Apagar'],
@@ -56,7 +80,35 @@ function sendCommand(command) {
         },
       };
 
-      bot.sendMessage(id, 'Por favor, dime qué quieres hacer:', messageOpts);
+      bot.sendMessage(id, 'Por favor, dime qué quieres hacer con la ' + selectedDevice.name, messageOpts);
+
+    } else if (command === 'Lámpara') {
+      selectedDevice.name = 'lámpara';
+      selectedDevice.ip = IP_lampara;
+
+      messageOpts = {
+        reply_markup: {
+          keyboard: [
+            ['Encender', 'Apagar'],
+            ['Potencia', 'Estado'],
+          ],
+        },
+      };
+
+      bot.sendMessage(id, 'Por favor, dime qué quieres hacer con la ' + selectedDevice.name, messageOpts);
+
+    } else {
+      messageOpts = {
+        reply_markup: {
+          keyboard: [
+            ['Encender', 'Apagar'],
+            ['Potencia', 'Estado'],
+          ],
+        },
+      };
+
+      bot.sendMessage(id, 'Por favor, dime qué quieres hacer con la ' + selectedDevice.name, messageOpts);
+
     }
   });
 
@@ -69,23 +121,25 @@ function sendCommand(command) {
 
       if (command === 'Encender' || command === 'Apagar') {
         if (adaptedData === 'power relay: off') {
-          res = 'Ahora está apagado';
+          res = 'Has apagado la ' + selectedDevice.name;
 
         } else if (adaptedData === 'power relay: on') {
-          res = 'Ahora está encendido';
+          res = 'Has encendido la ' + selectedDevice.name;
 
         } else if (adaptedData === 'it was already off') {
-          res = 'Ya estaba apagado';
+          res = 'La ' + selectedDevice.name + ' ya estaba apagada';
 
         } else if (adaptedData === 'it was already on') {
-          res = 'Ya estaba encendido';
+          res = 'La ' + selectedDevice.name + ' ya estaba encendida';
         }
 
       } else if (command === 'Potencia') {
-        res = JSON.parse(data.toString().substring(60, data.length - 3))[1].text + ' w';
+        res = 'La ' + selectedDevice.name + ' está consumiendo ' +
+          JSON.parse(data.toString().substring(60, data.length - 3))[1].text + 'W';
 
       } else if (command === 'Estado') {
-        res = JSON.parse(data.toString().substring(60, data.length - 3))[0].text > 0 ? 'Encendido' : 'Apagado';
+        const status = JSON.parse(data.toString().substring(60, data.length - 3))[0].text > 0 ? 'encendida' : 'apagada';
+        res = 'La ' + selectedDevice.name + ' está ' + status;
       }
 
       console.log('RESPONSE: ' + res);
@@ -122,6 +176,12 @@ net.createServer(socket => {
     console.log(JSON.parse(data).Plug3.Data.toString());
     const pot = JSON.parse(data).Plug3.Data.toString();
     const status = JSON.parse(data).Plug0.Data.toString();
+
+    if (Number(pot) > 1500 && !alreadySended) {
+      bot.sendMessage(id, '¡Atención! Tu estufa está consumiendo demasiada potencia (>1500W)');
+      console.log('WARNING: too much power consumption!');
+      alreadySended = true;
+    }
 
     unirest.post('http://localhost:3000/data')
       .header('Accept', 'application/json')
