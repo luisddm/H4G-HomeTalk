@@ -4,10 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>HomeTalk</title>
+
     <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -16,19 +17,25 @@
     <![endif]-->
   </head>
   <body class="container">
+
     <div class="row">
-      <div class="col-xs-6">
+
+      <div class="col-md-6 col-xs-12">
         <h1 class="jumbotron" id="bgcolor1" class="success">Potencia actual: <span id="current-value"></span></h1>
       </div>
-      <div class="col-xs-6">
+
+      <div class="col-md-6 col-xs-12">
         <h1 class="jumbotron" id="bgcolor2">Estado: <span id="current-status"></span></h1>
       </div>
+
     </div>
 
     <div class="row">
+
       <div class="col-xs-12">
-        <div id="container"></div>
+        <div id="highcharts"></div>
       </div>
+
     </div>
 
     <script src="node_modules/jquery/dist/jquery.min.js"></script>

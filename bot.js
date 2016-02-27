@@ -6,23 +6,22 @@ const unirest = require('unirest');
 const token = '196497098:AAF0yqiUGGm1-xQNyjbYo5qb6cpy6aEMW9E';
 
 // AT commands
-const setManualMode = 'at!comm\n';
 const getData = 'at!wt\n';
 const setPowerRelayOn = 'at!ac022on\n';
 const setPowerRelayOff = 'at!ac022of\n';
-const exit = 'at!ex\n';
 
 const IP_01 = '10.0.11.220';
 const IP_02 = '10.0.11.216';
-const portAsk = 9765;
-const portReceive = 9757;
+
+const clientPort = 9765;
+const serverPort = 9757;
 
 // Setup Telegram bot polling way
 const bot = new TelegramBot(token, { polling: true });
 
 var id;
 
-// If we receive any kind of message
+// When the bot receives any kind of message
 bot.on('message', msg => {
   console.log('\nMESSAGE: ' + msg.text);
   console.log(`WHO: ${msg.from.first_name} ${msg.from.last_name} (${msg.from.username})`);
@@ -30,23 +29,25 @@ bot.on('message', msg => {
   id = msg.from.id;
 
   sendCommand(msg.text);
-
 });
 
 function sendCommand(command) {
   const socket = new net.Socket();
 
-  socket.connect(portAsk, IP_01, () => {
+  socket.connect(clientPort, IP_01, () => {
     console.log('Connected');
+
     if (command === 'Encender') {
       socket.write(setPowerRelayOn);
+
     } else if (command === 'Apagar') {
       socket.write(setPowerRelayOff);
+
     } else if (command === 'Potencia' || command === 'Estado') {
       socket.write(getData);
+
     } else {
-      const data = 'Por favor, dime qué quieres hacer:';
-      const opts = {
+      const messageOpts = {
         reply_markup: {
           keyboard: [
             ['Encender', 'Apagar'],
@@ -55,27 +56,34 @@ function sendCommand(command) {
         },
       };
 
-      bot.sendMessage(id, data, opts);
+      bot.sendMessage(id, 'Por favor, dime qué quieres hacer:', messageOpts);
     }
   });
 
   socket.on('data', data => {
+    // Ignore the welcome message
     if (!data.toString().startsWith('---')) {
 
       var res;
+      const adaptedData = String(data).trim();
 
       if (command === 'Encender' || command === 'Apagar') {
-        if (String(data).trim() === 'power relay: off') {
+        if (adaptedData === 'power relay: off') {
           res = 'Ahora está apagado';
-        } else if (String(data).trim() === 'power relay: on') {
+
+        } else if (adaptedData === 'power relay: on') {
           res = 'Ahora está encendido';
-        } else if (String(data).trim() === 'it was already on') {
-          res = 'Ya estaba encendido';
-        } else if (String(data).trim() === 'it was already off') {
+
+        } else if (adaptedData === 'it was already off') {
           res = 'Ya estaba apagado';
+
+        } else if (adaptedData === 'it was already on') {
+          res = 'Ya estaba encendido';
         }
+
       } else if (command === 'Potencia') {
         res = JSON.parse(data.toString().substring(60, data.length - 3))[1].text + ' w';
+
       } else if (command === 'Estado') {
         res = JSON.parse(data.toString().substring(60, data.length - 3))[0].text > 0 ? 'Encendido' : 'Apagado';
       }
@@ -85,7 +93,9 @@ function sendCommand(command) {
       bot.sendMessage(id, res).then(() => {
         socket.destroy(); // kill client after server's response
       });
+
     } else {
+      // Show this instead of the welcome message
       console.log('Hello!');
     }
 
@@ -100,34 +110,34 @@ function sendCommand(command) {
   });
 
   socket.on('error', (err) => {
-    bot.sendMessage(id, 'ERROR');
+    bot.sendMessage(id, '¡Se ha producido un error! :(');
     console.log('ERROR: ' + err);
   });
 }
 
 net.createServer(socket => {
-  console.log('\nNew data!');
+  console.log('\nGot new data from the device!');
 
   socket.on('data', data => {
     console.log(JSON.parse(data).Plug3.Data.toString());
     const pot = JSON.parse(data).Plug3.Data.toString();
     const status = JSON.parse(data).Plug0.Data.toString();
 
-    unirest.post('http://localhost:3000/posts')
+    unirest.post('http://localhost:3000/data')
       .header('Accept', 'application/json')
       .send({ date: Date(), power: pot, status: status > 0 ? true : false })
       .end(() => {
-        console.log('Added new data!');
+        console.log('Added new data');
       });
 
-    unirest.get('http://localhost:3000/posts')
+    unirest.get('http://localhost:3000/data')
       .end(response => {
         if (response.body.length > 10) {
-          unirest.delete('http://localhost:3000/posts/' + response.body[0].id).end(() => {
-            console.log('Data deleted!');
+          unirest.delete('http://localhost:3000/data/' + response.body[0].id).end(() => {
+            console.log('Removed old data');
           });
         }
       });
 
   });
-}).listen(portReceive);
+}).listen(serverPort);
